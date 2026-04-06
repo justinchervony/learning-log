@@ -1,8 +1,21 @@
 #include <iostream>
 #include <cmath>
+#include <string>
 
 float midiToFrequency (int midiNote){
     return 440.0f * std::pow(2.0f, (midiNote - 69) / 12.0f);
+}
+
+std::string noteName(int midiNote){
+    if (midiNote < 0 || midiNote > 127){
+        return "invalid";
+    }
+    else if (midiNote == 69) {
+        return "A4";
+    }
+    else {
+        return "other";
+    }
 }
 
 int main () {
@@ -15,6 +28,12 @@ int main () {
     std::cout << frequency << std::endl;
     std::cout << isPlaying << std::endl;
     std::cout << freq << std::endl;
+    std::cout << noteName(69) << std::endl;
+    std::cout << noteName(200) << std::endl;
+
+    for (int i = 0; i < 4; i++){
+        std::cout << "beat " << i << std::endl;
+    }
 
     return 0;
 }
