@@ -43,6 +43,7 @@ int main () {
     bool isPlaying = true;
     float freq = midiToFrequency(69);
     std::vector<float> sineBuffer = generateSineWave(440.0f, 44100.0f, 44100);
+    float* ptr = &frequency;
 
     std::cout << sampleRate << std::endl;
     std::cout << frequency << std::endl;
@@ -62,6 +63,13 @@ int main () {
     std::cout << "Before gain: " << sineBuffer[1] << std::endl;
     applyGain(sineBuffer, 0.5f);
     std::cout << "After gain: " << sineBuffer[1] << std::endl;
+
+    std::cout << ptr << std::endl;
+    std::cout << *ptr << std::endl;
+
+    *ptr = 880.0f;
+    std::cout << frequency << std::endl;
+
 
     return 0;
 }
