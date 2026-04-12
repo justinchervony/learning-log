@@ -31,6 +31,12 @@ std::vector<float> generateSineWave(float frequency, float sampleRate, int numSa
     return buffer;
 }
 
+void applyGain(std::vector<float>& buffer, float gain) {
+    for (int i = 0; i < buffer.size(); i++) {
+        buffer[i] *= gain;
+    }
+}
+
 int main () {
     int sampleRate = 44100;
     float frequency = 440.0;
@@ -52,6 +58,10 @@ int main () {
     std::cout << "Buffer size: " << sineBuffer.size() << std::endl;
     std::cout << "First sample " << sineBuffer[0] << std::endl;
     std::cout << "Mid sample " << sineBuffer[22049] << std::endl;
+
+    std::cout << "Before gain: " << sineBuffer[1] << std::endl;
+    applyGain(sineBuffer, 0.5f);
+    std::cout << "After gain: " << sineBuffer[1] << std::endl;
 
     return 0;
 }
