@@ -37,6 +37,35 @@ void applyGain(std::vector<float>& buffer, float gain) {
     }
 }
 
+class Oscillator {
+    public:
+        void setFrequency(float freq) {
+            frequency = freq;
+        }
+
+        void setSampleRate(float sr) {
+            sampleRate = sr;
+        }
+
+        void reset() {
+            phase = 0.0f;
+        }
+
+        float getNextSample() {
+            float sample = std::sin(2.0f * 3.14159f * phase);
+            phase += frequency / sampleRate;
+            if (phase >= 1.0f)
+                phase -= 1.0f;
+            return sample;
+        }
+
+    private:
+        float frequency = 0.0f;
+        float sampleRate = 44100.0f;
+        float phase = 0.0f;
+
+};
+
 int main () {
     int sampleRate = 44100;
     float frequency = 440.0;
@@ -69,6 +98,14 @@ int main () {
 
     *ptr = 880.0f;
     std::cout << frequency << std::endl;
+
+    Oscillator osc;
+    osc.setSampleRate(44100.0f);
+    osc.setFrequency(440.0f);
+
+    for(int i = 0; i < 10; i++) {
+        std::cout << osc.getNextSample() << std::endl;
+    }
 
 
     return 0;
