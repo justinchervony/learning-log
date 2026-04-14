@@ -80,5 +80,6 @@ int main () {
         std::cout << osc.getNextSample() << std::endl;
     }
 
+    
     return 0;
 }

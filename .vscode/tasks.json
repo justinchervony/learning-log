@@ -6,7 +6,7 @@
         {
             "label": "build and run",
             "type": "shell",
-            "command": "g++ ${file} -o ${fileDirname}\\${fileBasenameNoExtension} && ${fileDirname}\\${fileBasenameNoExtension}",
+            "command": "cmake --build ${workspaceFolder}\\build && ${workspaceFolder}\\build\\hello",
             "group": {
                 "kind": "build",
                 "isDefault": true
