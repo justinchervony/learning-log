@@ -3,14 +3,13 @@
 
 class Oscillator {
     public:
-        Oscillator();
+        void setFrequency(float freq) {frequency = freq;}
+        void setSampleRate(float sr) {sampleRate = sr;}
+        void reset() {phase = 0.0f;}
 
-        void setFrequency(float freq);
-        void setSampleRate(float sr);
-        void reset();
-        float getNextSample();
+        virtual float getNextSample() = 0;
 
-    private:
+    protected:
         float frequency = 0.0f;
         float sampleRate = 44100.0f;
         float phase = 0.0f;

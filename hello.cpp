@@ -2,7 +2,8 @@
 #include <cmath>
 #include <string>
 #include <vector>
-#include "Oscillator.h"
+#include "SineOscillator.h"
+#include "SquareOscillator.h"
 
 float midiToFrequency (int midiNote){
     return 440.0f * std::pow(2.0f, (midiNote - 69) / 12.0f);
@@ -72,14 +73,22 @@ int main () {
     *ptr = 880.0f;
     std::cout << frequency << std::endl;
 
-    Oscillator osc;
-    osc.setSampleRate(44100.0f);
-    osc.setFrequency(440.0f);
+    SineOscillator osc1;
+    osc1.setSampleRate(44100.0f);
+    osc1.setFrequency(440.0f);
 
-    for(int i = 0; i < 10; i++) {
-        std::cout << osc.getNextSample() << std::endl;
+    SineOscillator osc2;
+    osc2.setSampleRate(44100.0f);
+    osc2.setFrequency(880.0f);
+
+    SquareOscillator osc3;
+    osc3.setSampleRate(44100.0f);
+    osc3.setFrequency(440.0f);
+
+    for(int i = 0; i < 5; i++) {
+        std::cout << osc1.getNextSample() << " | " << osc2.getNextSample() << " | " << osc3.getNextSample() << std::endl;
     }
 
-    
+
     return 0;
 }
