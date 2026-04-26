@@ -4,6 +4,7 @@
 #include <vector>
 #include "SineOscillator.h"
 #include "SquareOscillator.h"
+#include <fstream>
 
 float midiToFrequency (int midiNote){
     return 440.0f * std::pow(2.0f, (midiNote - 69) / 12.0f);
@@ -39,56 +40,62 @@ void applyGain(std::vector<float>& buffer, float gain) {
     }
 }
 
+void writeWavFile(const std::string& filename,
+                    const std::vector<float>& buffer,
+                    int sampleRate) {
+    std::ofstream file(filename, std::ios::binary);
+
+    int numSamples = buffer.size();
+    int byteRate = sampleRate * 2;
+    int dataSize = numSamples * 2;
+    int chunkSize = 36 + dataSize;
+
+    //WAV header
+    file.write("RIFF", 4);
+    file.write((char*)&chunkSize, 4);
+    file.write("WAVE", 4);
+    file.write("fmt ", 4);
+
+    int subchunk1Size = 16;
+    short audioFormat = 1;
+    short numChannels = 1;
+    short bitsPerSample = 16;
+    short blockAlign = 2;
+
+    file.write((char*)&subchunk1Size, 4);
+    file.write((char*)&audioFormat, 2);
+    file.write((char*)&numChannels, 2);
+    file.write((char*)&sampleRate, 4);
+    file.write((char*)&byteRate, 4);
+    file.write((char*)&blockAlign, 2);
+    file.write((char*)&bitsPerSample, 2);
+    file.write("data", 4);
+    file.write((char*)&dataSize,4);
+
+    //Audio data
+    for (float sample : buffer) {
+        short s = static_cast<short>(sample * 32767.0f);
+        file.write((char*)&s, 2);
+    }
+}
+
 
 int main () {
-    int sampleRate = 44100;
-    float frequency = 440.0;
-    bool isPlaying = true;
-    float freq = midiToFrequency(69);
-    std::vector<float> sineBuffer = generateSineWave(440.0f, 44100.0f, 44100);
-    float* ptr = &frequency;
+    const int sampleRate = 44100;
+    const int numSeconds = 3;
+    const int numSamples = sampleRate * numSeconds;
 
-    std::cout << sampleRate << std::endl;
-    std::cout << frequency << std::endl;
-    std::cout << isPlaying << std::endl;
-    std::cout << freq << std::endl;
-    std::cout << noteName(69) << std::endl;
-    std::cout << noteName(200) << std::endl;
+    SineOscillator osc;
+    osc.setSampleRate(sampleRate);
+    osc.setFrequency(440.0f);
 
-    for (int i = 0; i < 4; i++){
-        std::cout << "beat " << i << std::endl;
+    std::vector<float> buffer;
+    for(int i = 0; i < numSamples; i++) {
+        buffer.push_back(osc.getNextSample());
     }
 
-    std::cout << "Buffer size: " << sineBuffer.size() << std::endl;
-    std::cout << "First sample " << sineBuffer[0] << std::endl;
-    std::cout << "Mid sample " << sineBuffer[22049] << std::endl;
-
-    std::cout << "Before gain: " << sineBuffer[1] << std::endl;
-    applyGain(sineBuffer, 0.5f);
-    std::cout << "After gain: " << sineBuffer[1] << std::endl;
-
-    std::cout << ptr << std::endl;
-    std::cout << *ptr << std::endl;
-
-    *ptr = 880.0f;
-    std::cout << frequency << std::endl;
-
-    SineOscillator osc1;
-    osc1.setSampleRate(44100.0f);
-    osc1.setFrequency(440.0f);
-
-    SineOscillator osc2;
-    osc2.setSampleRate(44100.0f);
-    osc2.setFrequency(880.0f);
-
-    SquareOscillator osc3;
-    osc3.setSampleRate(44100.0f);
-    osc3.setFrequency(440.0f);
-
-    for(int i = 0; i < 5; i++) {
-        std::cout << osc1.getNextSample() << " | " << osc2.getNextSample() << " | " << osc3.getNextSample() << std::endl;
-    }
-
+    writeWavFile("output.wav", buffer, sampleRate);
+    std::cout << "WAV file written." << std::endl;
 
     return 0;
 }
